@@ -58,7 +58,7 @@ void Request__command(int GPIO_PIN)
   }
 
   // send HTTP request header
-  client.println(HTTP_METHOD + " " + PATH_NAME + "?button=" + GPIO_PIN + "hello HTTP/1.1");
+  client.println(HTTP_METHOD + " " + PATH_NAME + "?button=" + GPIO_PIN + " HTTP/1.1");
   client.println("Host: " + String(HOST_NAME));
   client.println("Connection: close");
   client.println(); // end HTTP request header

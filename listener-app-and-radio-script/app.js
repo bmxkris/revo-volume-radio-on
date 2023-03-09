@@ -16,22 +16,26 @@ const server = http.createServer((req, res) => {
     var params = url.parse(req.url, true).query;
     const button = params['button'];
     // console.log(volume[button])
+
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
     res.end('OK');
-    const exec = require('child_process').exec;
-    var yourscript = exec(`python3.9 revo.py ${volume[button]}`,
-      (error, stdout, stderr) => {
-        if (error !== null) {
-          console.log('exec error: ${error}');
-          process.abort()
+
+    if(volume[button] !== undefined){
+      const exec = require('child_process').exec;
+      var yourscript = exec(`python3.9 revo.py ${volume[button]}`,
+        (error, stdout, stderr) => {
+          if (error !== null) {
+            console.log('exec error: ${error}');
+            process.abort()
+          }
         }
-      }
-    )
-    yourscript.stdout.pipe(process.stdout)
-    yourscript.on('exit', function() {
-      console.log('Child script has finished')
-    })
+      )
+      yourscript.stdout.pipe(process.stdout)
+      yourscript.on('exit', function() {
+        console.log('Child script has finished')
+      })
+    }
   })
 });
 
