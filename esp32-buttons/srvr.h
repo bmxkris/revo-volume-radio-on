@@ -1,5 +1,6 @@
 #include <WiFi.h>
 #include "wifienv.h" // All my config for SSID, Password and IP addresses
+#include <HTTPClient.h>
 
 /* Server and IP address ------------------------------------------------------*/
 WiFiServer server(80); // Wifi server exemplar using port 80
@@ -25,12 +26,9 @@ void Srvr__setup()
 
     // Waiting the connection to a router
     while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
+        delay(250);
         Serial.print(".");
     }
-
-    // Connection is complete
-    Serial.println("");
 
     Serial.println("WiFi connected");
 
@@ -47,35 +45,21 @@ void Srvr__setup()
 
 void Request__command(int GPIO_PIN)
 {
-  Serial.println("Start command request");
+  HTTPClient http;
 
-  WiFiClient client = server.available();
-  
-  if(client.connect(HOST_NAME, HTTP_PORT)) {
-    Serial.println("Connected to server");
-  } else {
-    Serial.println("connection failed");
+  http.begin("http://" + HOST_NAME + ":" + HTTP_PORT + PATH_NAME + "?button=" + GPIO_PIN); //Specify the URL
+  int httpCode = http.GET();  //Make the request
+
+  if (httpCode > 0) { //Check for the returning code
+
+    String payload = http.getString();
+    Serial.println(httpCode);
+    Serial.println(payload);
   }
 
-  // send HTTP request header
-  client.println(HTTP_METHOD + " " + PATH_NAME + "?button=" + GPIO_PIN + " HTTP/1.1");
-  client.println("Host: " + String(HOST_NAME));
-  client.println("Connection: close");
-  client.println(); // end HTTP request header
-  Serial.println("HTTP request finished");
+  else {
+    Serial.println("Error on HTTP request");
+  }
 
-  while(client.available())
-  {
-    // read an incoming byte from the server and print them to serial monitor:
-    char c = client.read();
-    Serial.print(c);
-  }
-  Serial.println("Come through here?");
-  if(!client.connected())
-  {
-    // if the server's disconnected, stop the client:
-    Serial.println("disconnected");
-    client.stop();
-  }
-  Serial.println("and it looks like there isn't a client and there is a client");
+  http.end(); //Free the resources
 }

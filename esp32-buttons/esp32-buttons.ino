@@ -34,10 +34,7 @@ void setup(){
   digitalWrite(15, HIGH);
   // Server initialization
   Srvr__setup();
-  
-  delay(2000);
-  digitalWrite(15, LOW);
-  
+
   //Increment boot number and print it every reboot
   ++bootCount;
   Serial.println("Boot number: " + String(bootCount));
@@ -46,6 +43,8 @@ void setup(){
   int GPIO_PIN = print_GPIO_wake_up();
   
   Request__command(GPIO_PIN);
+
+  digitalWrite(15, LOW);
 
   esp_sleep_enable_ext1_wakeup(BUTTON_PIN_BITMASK,ESP_EXT1_WAKEUP_ANY_HIGH);
 
