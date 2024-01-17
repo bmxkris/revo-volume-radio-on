@@ -10,6 +10,8 @@ const volume = {
   13: "12"
 }
 
+const py_path = '/../venv/bin/python'
+
 const server = http.createServer((req, res) => {
   logger(req, res, function (err) {
 
@@ -23,7 +25,7 @@ const server = http.createServer((req, res) => {
 
     if(volume[button] !== undefined){
       const exec = require('child_process').exec;
-      var yourscript = exec(`python3.9 revo.py ${volume[button]}`,
+      var yourscript = exec(`${process.cwd()+py_path} revo.py ${volume[button]}`,
         (error, stdout, stderr) => {
           if (error !== null) {
             console.log('exec error: ${error}');

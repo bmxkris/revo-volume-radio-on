@@ -4,3 +4,4 @@ package.json
 radiodeets.py
 __pycache__/
 wifienv.h
+venv/
